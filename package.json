@@ -1,6 +1,6 @@
 {
   "name": "@watchlog/apm-node",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A lightweight APM (Application Performance Monitoring) middleware for Node.js to monitor request durations, error traces, and memory usage — designed to integrate with Watchlog Agent.",
   "main": "index.js",
   "scripts": {
