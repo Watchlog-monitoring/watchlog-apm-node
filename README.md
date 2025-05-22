@@ -24,7 +24,8 @@ npm install -g @watchlog/apm-node
 Just start your app with APM enabled:
 
 ```bash
-node -r @watchlog/apm-node app.js
+WATCHLOG_SERVICE=api-auth node -r @watchlog/apm-node /app.js
+
 ```
 
 That’s it — no need to modify your code!  
@@ -37,18 +38,10 @@ The APM will auto-instrument Express and send metrics to your local Watchlog Age
 You can set a custom service name using an environment variable:
 
 ```bash
-export WATCHLOG_SERVICE=my-node-api
+WATCHLOG_SERVICE=my-node-api
 ```
 
 By default, service name is `"node-service"`
-
----
-
-## 📤 What gets sent
-
-Metrics are aggregated and sent every 10s to `http://localhost:3774/apm`
-
-
 
 ---
 
