@@ -1,33 +1,58 @@
-const dual = require('./lib/dualMiddleware');
-const errorMiddleware = require('./lib/errorHandler');
+// index.js برای preload
+const shimmer = require('shimmer');
+const hook = require('require-in-the-middle');
+const process = require('process');
 const sender = require('./lib/sender');
+const collector = require('./lib/collector');
+const normalizePath = require('./lib/normalizePath');
 
-module.exports = {
-  /**
-   * Middleware to start request timer. Must be added before route matching.
-   * @returns {Function} Express middleware
-   */
-  startTimer: dual.startTimer,
+// شروع ارسال متریک‌ها هر 10 ثانیه
+sender.start();
 
-  /**
-   * Middleware to track matched route and send metrics.
-   * Should be used after route handlers.
-   * @param {Object} options
-   * @returns {Function} Express middleware
-   */
-  trackRoute: dual.trackRoute,
+hook(['express'], (exports, name, basedir) => {
+  const express = exports;
 
-  /**
-   * Middleware to track unhandled errors.
-   * Should be used after all routes and route middlewares.
-   * @param {Object} options
-   * @returns {Function} Express error-handling middleware
-   */
-  errorMiddleware,
+  shimmer.wrap(express.response, 'end', function (original) {
+    return function (...args) {
+      try {
+        const req = this.req;
+        const res = this;
 
-  /**
-   * Starts periodic flushing and sending metrics to Watchlog Agent.
-   * @param {Object} config - { agentUrl, interval }
-   */
-  startSending: sender.start
-};
+        const start = req.__watchlog_start || process.hrtime.bigint();
+        const duration = Number(process.hrtime.bigint() - start) / 1e6;
+
+        const memory = process.memoryUsage();
+
+        const normalizedPath = normalizePath(req);
+        const method = req.method || 'UNKNOWN';
+        const statusCode = res.statusCode;
+
+        collector.record({
+          type: 'request',
+          service: process.env.WATCHLOG_SERVICE || 'node-service',
+          path: normalizedPath,
+          method,
+          statusCode,
+          duration,
+          timestamp: new Date().toISOString(),
+          memory
+        });
+      } catch (e) {
+        // silent fail
+      }
+
+      return original.apply(this, args);
+    };
+  });
+
+  shimmer.wrap(express.request, 'emit', function (original) {
+    return function (event, ...args) {
+      if (event === 'route') {
+        this.__watchlog_start = process.hrtime.bigint();
+      }
+      return original.call(this, event, ...args);
+    };
+  });
+
+  return express;
+});
