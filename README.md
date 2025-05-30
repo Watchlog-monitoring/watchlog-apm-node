@@ -1,6 +1,6 @@
 # @watchlog/apm-node
 
-🎯 Lightweight, preloadable Application Performance Monitoring (APM) for Node.js (Express) — built for [Watchlog](https://watchlog.io).
+🎯 Lightweight, preloadable Application Performance Monitoring (APM) for Node.js (Express) — built for [Watchlog](https://watchlog.io/products/apm-nodejs).
 
 ✅ Works out of the box with zero config using `--require`  
 📡 Sends aggregated metrics to your Watchlog Agent every 10 seconds  
@@ -65,14 +65,13 @@ pm2 delete api-auth
 2. **Then, start your app with APM enabled:**
 
 ```bash
-WATCHLOG_SERVICE=api-auth pm2 start api-auth.js --node-args="-r @watchlog/apm-node" --name "api-auth"
+WATCHLOG_SERVICE=api-auth pm2 start api-auth.js --node-args="-r @watchlog/apm-node" 
 ```
 
 📌 Explanation:
 
 - `WATCHLOG_SERVICE=api-auth`: Defines how your service appears in Watchlog
 - `--node-args="-r @watchlog/apm-node"`: Preloads the APM before starting your app
-- `--name "api-auth"`: Names this PM2 process (for easier management)
 
 ✅ Now your service will be monitored and appear correctly in Watchlog.
 
