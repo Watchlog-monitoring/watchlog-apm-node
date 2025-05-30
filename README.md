@@ -31,33 +31,58 @@ The APM will auto-instrument Express and send metrics to your local Watchlog Age
 
 ---
 
-## 🛠️ Usage with PM2
+## 🛠️ What is `WATCHLOG_SERVICE`?
 
-When using PM2, make sure to first delete any existing PM2 process for your app:
+This environment variable defines the **name of your service** as it will appear inside the Watchlog dashboard.
 
-```bash
-pm2 delete api-auth
-```
-
-Then start it with APM preload and custom service name:
-
-```bash
-WATCHLOG_SERVICE=api-auth pm2 start /app.js --node-args="-r @watchlog/apm-node" --name "api-auth"
-```
-
-This ensures that the APM preload hook works correctly from the beginning.
-
----
-
-## ⚙️ Configuration
-
-You can set a custom service name using an environment variable:
+For example:
 
 ```bash
 WATCHLOG_SERVICE=my-node-api
 ```
 
-By default, the service name is `"node-service"`.
+This will cause your service to be labeled as `"my-node-api"` in Watchlog's UI, and metrics like request counts, duration, and error rates will be grouped under this name.
+
+📝 **Recommendation:** Use meaningful names like `auth-service`, `user-api`, or `backend-main`.
+
+---
+
+## 🛠️ Usage with PM2
+
+If you use [PM2](https://pm2.keymetrics.io/) to manage your Node.js applications, make sure to preload the APM module properly.
+
+Let’s walk through an example scenario:
+
+> Suppose your application entry file is `api-auth.js`  
+> And you want this service to be named `"api-auth"` in Watchlog.
+
+1. **First, delete any existing PM2 process** for this app (optional but recommended to avoid conflicts):
+
+```bash
+pm2 delete api-auth
+```
+
+2. **Then, start your app with APM enabled:**
+
+```bash
+WATCHLOG_SERVICE=api-auth pm2 start api-auth.js --node-args="-r @watchlog/apm-node" --name "api-auth"
+```
+
+📌 Explanation:
+
+- `WATCHLOG_SERVICE=api-auth`: Defines how your service appears in Watchlog
+- `--node-args="-r @watchlog/apm-node"`: Preloads the APM before starting your app
+- `--name "api-auth"`: Names this PM2 process (for easier management)
+
+✅ Now your service will be monitored and appear correctly in Watchlog.
+
+---
+
+## ⚙️ Configuration Summary
+
+| Variable            | Description                                  | Default        |
+|---------------------|----------------------------------------------|----------------|
+| `WATCHLOG_SERVICE`  | Service name shown in Watchlog dashboard     | `"node-service"` |
 
 ---
 
