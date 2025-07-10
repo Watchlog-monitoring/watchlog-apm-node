@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/watchlogserver/watchlog-apm-node.git"
+    "url": "git+https://github.com/Watchlog-monitoring/watchlog-apm-node.git"
   },
   "keywords": [
     "apm",
@@ -25,9 +25,9 @@
   "author": "Mohammad",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/watchlogserver/watchlog-apm-node/issues"
+    "url": "https://github.com/Watchlog-monitoring/watchlog-apm-node/issues"
   },
-  "homepage": "https://github.com/watchlogserver/watchlog-apm-node#readme",
+  "homepage": "https://github.com/Watchlog-monitoring/watchlog-apm-node#readme",
   "dependencies": {
     "require-in-the-middle": "^7.5.2",
     "shimmer": "^1.2.1"
